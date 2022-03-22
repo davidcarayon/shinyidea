@@ -1,0 +1,97 @@
+FROM r-base:latest
+
+## Build author
+ARG AUTHOR="SK8 team"
+
+## App name by default, the name is set at docker build dynamically using project name
+ARG APP_NAME="superApp"
+ENV APP_NAME ${APP_NAME}
+
+## App version by default, the version is set at docker build dynamically using project commit version
+ARG APP_VERSION="SK8"
+ENV APP_VERSION ${APP_VERSION}
+
+
+LABEL   org.opencontainers.image.authors="$AUTHOR" \
+        org.opencontainers.image.licenses="GPL-2.0-or-later" \
+      	org.opencontainers.image.source="https://forgemia.inra.fr/sk8/team/ressources/docker/dockerfile" \
+      	org.opencontainers.image.vendor="SK8 Project" \
+        org.opencontainers.image.description="A simple configuration to run a R-Shiny App" 
+
+
+## Add here libraries dependencies
+## there are more libraries that are needed here
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sudo \
+    gdebi-core \
+    locales \
+    git \
+    openssh-client \
+    libssh2-1-dev \
+    libgit2-dev \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+## Change timezone
+ENV CONTAINER_TIMEZONE Europe/Paris
+ENV TZ Europe/Paris
+
+RUN sudo echo "Europe/Paris" > /etc/timezone
+RUN echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen \
+  && locale-gen fr_FR.UTF8 \
+  && /usr/sbin/update-locale LANG=fr_FR.UTF-8
+
+ENV LC_ALL fr_FR.UTF-8
+ENV LANG fr_FR.UTF-8
+
+## R package dependencies
+## Add here R packages dependencies
+RUN Rscript -e "install.packages(c('shiny'), repos='https://cloud.r-project.org/')"
+## To get last version of packages
+# comment it if you install specific R packages version
+RUN Rscript -e "update.packages(ask=FALSE)"
+
+## App name by default, the name is set at docker build dynamically using project name
+ARG APP_NAME="superApp"
+
+
+## Clean unnecessary libraries
+RUN apt-get update && apt-get remove --purge -y \
+    gdebi-core \
+    libssl-dev \
+    git \
+    openssh-client \
+    libssh2-1-dev \
+    libgit2-dev \
+  && apt-get autoremove -y \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+## Change shiny user rights
+## USER shiny
+RUN useradd -ms /bin/bash shiny
+RUN passwd shiny -d
+WORKDIR /home/shiny
+
+## Copy the application into image
+## Add here files and directory necessary for the app.
+## global.R ui.R server.R ...
+RUN mkdir -p /home/shiny/${APP_NAME}
+COPY ui.R /home/shiny/${APP_NAME}
+COPY server.R /home/shiny/${APP_NAME}
+#COPY global.R /home/shiny/${APP_NAME}
+ADD www /home/shiny/${APP_NAME}/www
+# Copy App directory
+#ADD myApp /home/shiny/${APP_NAME}
+
+RUN chown -R shiny.shiny /home/shiny
+
+USER shiny
+
+EXPOSE 3838
+
+ENV APP_NAME ${APP_NAME}
+
+CMD ["sh", "-c", "Rscript -e \"shiny::runApp('/home/shiny/${APP_NAME}', port = 3838, host = '0.0.0.0' )\""]
+
+

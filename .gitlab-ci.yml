@@ -1,0 +1,131 @@
+# etape du pipeline
+stages: 
+  - construction_de_l_application
+  - ajout_nom_version_tag_a_l_application
+  - actions
+  - mise_a_jour
+
+variables:
+   R_DOCKER_TAG: 'cat renv.lock | grep "Version" - | grep -o "[0-9\.]*" - | head -n 1'
+   R_DOCKER_IMAGE: "r-base"
+
+# Si on utilise renv dans le CI/CD
+#  RENV_CONFIG_REPOS_OVERRIDE: "https://packagemanager.rstudio.com"
+#  RENV_PATHS_CACHE: ${CI_PROJECT_DIR}/cache
+#  RENV_PATHS_LIBRARY: ${CI_PROJECT_DIR}/renv/library
+
+# Commande generique
+.commande-job: &commande-job
+  - TAG=$(if [ "$CI_COMMIT_TAG" != "" ]; then echo "$CI_COMMIT_TAG"; else echo "$CI_COMMIT_SHA"; fi)
+  - 'curl -X POST 
+   -F token=$SK8_TOKEN_DEPLOY
+   -F ref=main 
+   -F "variables[SK8_ACTION]=$ACTION" 
+   -F "variables[SK8_TYPE]=$SK8_TYPE_NORMAL" 
+   -F "variables[SK8_PROJECT_PATH]=$CI_PROJECT_PATH" 
+   -F "variables[SK8_PROJECT_NAME]=$CI_PROJECT_NAME" 
+   -F "variables[SK8_PROJECT_TAG]=$TAG" 
+   "$SK8_API_PROJECT"'
+
+
+#cache:
+#  key: ${CI_JOB_NAME}
+#  paths:
+#    - ${RENV_PATHS_CACHE}
+#    - ${RENV_PATHS_LIBRARY}
+
+## Build docker image of the R shiny app
+## using DockerFile and register it in the 
+## docker registry of the project
+Construire-l-application:
+  image: docker:20.10.12
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  services:
+    - docker:20.10.12-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  stage: construction_de_l_application
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+      allow_failure: false
+    - when: never
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --build-arg APP_NAME=$CI_PROJECT_NAME --build-arg APP_VERSION="SK8-$CI_COMMIT_SHORT_SHA" --build-arg AUTHOR="$CI_COMMIT_AUTHOR" --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest -f Dockerfile.simple.rshiny .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+  after_script:
+    - docker logout $CI_REGISTRY
+
+## Tag docker image with git tags
+Tag-version:
+  image: docker:20.10.12
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  services:
+    - docker:20.10.12-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  stage: ajout_nom_version_tag_a_l_application
+  needs: ["Construire-l-application"]
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?$/'
+      when: on_success
+      allow_failure: false
+    - when: never
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  after_script:
+    - docker logout $CI_REGISTRY
+
+mise-en-ligne-1-ere-fois:
+  stage: actions
+  needs: ["Construire-l-application"]
+  image: curlimages/curl:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false
+  script:
+    - ACTION=$SK8_DEPLOY
+    - *commande-job
+
+arret-mise-en-ligne:
+  stage: actions
+  image: curlimages/curl:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false
+  script:
+    - ACTION=$SK8_STOP
+    - *commande-job
+
+mise-a-jour-application:
+  stage: mise_a_jour
+  needs: ["Construire-l-application"]
+  image: curlimages/curl:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false
+  script:
+    - ACTION=$SK8_UPIMAGE
+    - *commande-job
+
+annuler-mise-a-jour-application:
+  stage: mise_a_jour
+  needs: ["Construire-l-application"]
+  image: curlimages/curl:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: false
+  script:
+    - ACTION=$SK8_ROLLOUT
+    - *commande-job
+

@@ -1,0 +1,11 @@
+# Defini la partie server
+server <- function(input, output, session) {
+
+    output$SK8Image <- renderImage({
+	    list(src="images/sk8.png",
+		 contentType = 'image/png',
+		 width = 200,
+		 alt = "Logo SK8")
+    })
+}
+
