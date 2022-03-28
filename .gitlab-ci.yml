@@ -4,3 +4,6 @@ include:
     file:
       - "/templates/.docker-template.yml"
       - "/templates/.cicd-template.yml"
+
+variables:
+  DOCKERFILE_NAME: "Dockerfile.simple.rshiny"
