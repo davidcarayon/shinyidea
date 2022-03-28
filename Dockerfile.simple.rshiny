@@ -1,4 +1,7 @@
-FROM r-base:latest
+ARG R_IMAGE=r-base:latest
+FROM $R_IMAGE
+ARG R_IMAGE
+RUN echo $R_IMAGE > docker_image_version
 
 ## Build author
 ARG AUTHOR="SK8 team"
