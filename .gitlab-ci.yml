@@ -7,3 +7,4 @@ include:
 
 variables:
   DOCKERFILE_NAME: "Dockerfile.simple.rshiny"
+  R_DOCKER_TAG: "latest"
