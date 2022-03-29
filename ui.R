@@ -7,6 +7,10 @@ ui <- fluidPage(
     # affiche une image
     mainPanel(
         imageOutput("SK8Image")
+    ),
+    div(
+        class="footer",
+        includeHTML("footer.html")
     )
 )
 
