@@ -1,5 +1,5 @@
 include:
-  - project: "sk8/sk8-apps/sk8-template-ci"
+  - project: "sk8/sk8-conf/sk8-template-ci"
     ref: main
     file:
       - "/templates/.header-template.yml"
