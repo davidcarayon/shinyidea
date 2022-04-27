@@ -8,8 +8,8 @@ Dans ce template on dispose de :
 * [server.R](server.R) la partie serveur
 * [global.R](global.R) les définitions globals
 * [www/](www/) Répertoire pour les fichiers statics
-* [Dockerfile.simple.rshiny](Dockerfile.simple.rshiny) pour générer l'image docker de l'application
 * [.gitlab-ci.yml](.gitlab-ci.yml) gère l'intégration continue pour l'application
+* [.dockerignore](.dockerignore) fichiers ou repertoires a ne pas inclure dans l'image docker
 
 ## Développement de l'application.
 
@@ -18,16 +18,13 @@ Compléter les fichiers ui.R, server.R et global.R .
 ### Merci d'ajouter les remerciements et hébergement par SK8
 
 ```
-TODO code Rshiny
+div(
+    class="footer",
+    includeHTML("footer.html")
+)
 ```
 
-## Modification à apporter
-
-### Le dockerfile
-
-Ajouter dans le fichier [Dockerfile.simple.rshiny](Dockerfile.simple.rshiny) les packages R a utiliser (ainsi que les libraires systèmes necessaires).
-
-Pour ajouter de nouveau fichier Rscript ou autres il faut les ajouter dans le build avec la commande *RUN ADD*.
+Vous pouvez le modifer et/ou inclure les informations qu'il contient d'une manière qui soit plus en résonance avec votre application.
 
 ## Pour récupérer l'image docker de mon application
 
@@ -39,7 +36,7 @@ docker run -it -p 3838:3838 registry.forgemia.inra.fr/<Chemin du projet>:latest
 ```
 
 Accès à l'application:  
-https://localhost:3838
+http://localhost:3838
 
 ## Fonctionnement du pipeline d'intégration
 
@@ -48,7 +45,11 @@ Le dernier pipeline activé (au dernier commit and push) est le premier de la li
 En cliquant sur le pipeline, on a accès à différentes actions.  
 La mise à jour de l'image de l'application, et la mise a jour de l'application en ligne.  
 
+## Documentations
+
+Pour avoir plus d'information sur les modifications possibles [/sk8/sk8-conf/sk8-template-ci/](/sk8/sk8-conf/sk8-templates-ci/) et la [documentation en ligne](https://docs.sk8.inrae.fr).
+
 ## Problèmes / questions
 
 Contact via une issue : [https://forgemia.inra.fr/sk8/sk8-support](https://forgemia.inra.fr/sk8/sk8-support/-/issues/new)  de préférence.  
-Ou par email contact-sk8@groupe.renater.fr
+Ou par email contact-sk8@groupes.renater.fr
