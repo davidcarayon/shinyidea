@@ -2,7 +2,7 @@
 server <- function(input, output, session) {
 
     output$SK8Image <- renderImage({
-	    list(src="www/images/sk8.png",
+	    list(src= normalizePath(file.path("www/images","SK8.png")),
 		 contentType = 'image/png',
 		 width = 200,
 		 alt = "Logo SK8")
