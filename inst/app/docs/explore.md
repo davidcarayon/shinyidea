@@ -1,0 +1,1 @@
+Bienvenue sur le module d'analyses individuelles. En insérant votre calculateur IDEA4 (XLS, XLSX, JSON) ci-dessous, vous pourrez accéder à différentes visualisations de vos résultats que vous pourrez ensuite télécharger.
