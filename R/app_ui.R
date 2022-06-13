@@ -1,8 +1,8 @@
 #' The application User-Interface
-#' 
-#' @param request Internal parameter for `{shiny}`. 
+#'
+#' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#'     
+#'
 #' @noRd
 #' @importFrom bs4Dash dashboardPage dashboardHeader dashboardBrand dashboardSidebar sidebarMenu menuItem sidebarHeader dashboardControlbar dashboardFooter dashboardBody tabItems tabItem
 #' @importFrom shiny tagList icon a includeMarkdown
@@ -11,7 +11,7 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic 
+    # Your application UI logic
     dashboardPage(
       title = "ShinyIDEA",
       preloader <- list(html = tagList(spin_1(), "Loading ..."), color = "#343a40"),
@@ -55,6 +55,11 @@ app_ui <- function(request) {
             "Mentions légales",
             tabName = "cgu",
             icon = icon("book")
+          ),
+          menuItem(
+            "Contact",
+            tabName = "contact",
+            icon = icon("mail")
           )
         )
       ),
@@ -77,6 +82,10 @@ app_ui <- function(request) {
             includeMarkdown(app_sys("app", "docs", "cgu.md"))
           ),
           tabItem(
+            tabName = "contact",
+            includeMarkdown(app_sys("app", "docs", "cgu.md"))
+          )
+          tabItem(
             tabName = "indiv",
             mod_indiv_analysis_ui("indiv_analysis_ui_1")
           ),
@@ -95,22 +104,22 @@ app_ui <- function(request) {
 }
 
 #' Add external Resources to the Application
-#' 
-#' This function is internally used to add external 
-#' resources inside the Shiny application. 
+#'
+#' This function is internally used to add external
+#' resources inside the Shiny application.
 #'
 #' @noRd
-#' 
+#'
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @importFrom bs4Dash box
 #' @importFrom shiny tags HTML
 golem_add_external_resources <- function(){
-  
-  
+
+
   add_resource_path(
     'www', app_sys('app/www')
   )
-  
+
   tags$head(
     favicon(),
     bundle_resources(
@@ -148,7 +157,7 @@ golem_add_external_resources <- function(){
       )
     )
     # Add here other external resources
-    # for example, you can add useShinyalert() 
+    # for example, you can add useShinyalert()
   )
 }
 
