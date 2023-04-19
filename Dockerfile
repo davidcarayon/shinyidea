@@ -22,7 +22,6 @@ RUN Rscript -e 'remotes::install_version("DT",upgrade="never", version = "0.26")
 RUN Rscript -e 'remotes::install_version("bs4Dash",upgrade="never", version = "2.2.1")'
 RUN Rscript -e 'remotes::install_version("tinytex",upgrade="never", version = "0.45")'
 RUN Rscript -e 'remotes::install_github("rstudio/sass@2f1f152d84c162ccb9aba1c056e3548079d669d9")'
-RUN Rscript -e 'tinytex::install_tinytex()'
 RUN mkdir /build_zone
 ADD . /build_zone
 WORKDIR /build_zone
