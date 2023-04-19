@@ -12,4 +12,6 @@ app_server <- function( input, output, session ) {
   dlmodule_group("group_analysis_ui_1")
   dlmodule_json("jsonify_ui_1")
   mod_jsonify_server("jsonify_ui_1")
+  mod_database_stat_server("database_stat_1")
+  mod_repere_server("repere_1")
 }

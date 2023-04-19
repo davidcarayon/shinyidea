@@ -1,101 +1,118 @@
 #' The application User-Interface
-#'
-#' @param request Internal parameter for `{shiny}`.
+#' 
+#' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
-#'
+#'     
 #' @noRd
-#' @importFrom bs4Dash dashboardPage dashboardHeader dashboardBrand dashboardSidebar sidebarMenu menuItem sidebarHeader dashboardControlbar dashboardFooter dashboardBody tabItems tabItem
-#' @importFrom shiny tagList icon a includeMarkdown
-#' @importFrom waiter spin_1
+#' @importFrom bs4Dash dashboardPage dashboardHeader dashboardBrand dashboardSidebar sidebarUserPanel sidebarMenu menuItem sidebarHeader dashboardFooter dashboardBody tabItems tabItem
+#' @importFrom shiny tagList icon a includeHTML includeMarkdown
+#' @importFrom shinyjs useShinyjs
 app_ui <- function(request) {
-  tagList(
+  shiny::tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic
-    dashboardPage(
+    shinyjs::useShinyjs(),
+    # Your application UI logic 
+    bs4Dash::dashboardPage(
       title = "ShinyIDEA",
-      preloader <- list(html = tagList(spin_1(), "Loading ..."), color = "#343a40"),
-      header = dashboardHeader(
-        title <- dashboardBrand(
+      preloader <- list(html = shiny::tagList(spin_1(), "Loading ..."), color = "#343a40"),
+      header = bs4Dash::dashboardHeader(
+        title <- bs4Dash::dashboardBrand(
           title = "ShinyIDEA",
           color = "white",
           image = "https://methode-idea.org/fileadmin/_processed_/b/a/csm_IDEA_233d11c519.png"
         )),
-      sidebar = dashboardSidebar(
+      sidebar = bs4Dash::dashboardSidebar(
         skin="light",
-        status = "info",
+        status = "success",
         minified = FALSE,
-        sidebarMenu(
+      bs4Dash::sidebarUserPanel(
+      image = "https://cdn-icons-png.flaticon.com/512/652/652076.png",
+      name = "Utilisateur IDEA4"
+    ),
+        bs4Dash::sidebarMenu(
           id = "sidebarmenu",
-          menuItem(
+          bs4Dash::menuItem(
             "Accueil",
             selected = TRUE,
             tabName = "home",
-            icon = icon("list-alt")
+            icon = shiny::icon("list-alt")
           ),
-          sidebarHeader("Outils d'analyse"),
-          menuItem(
+          bs4Dash::sidebarHeader("Analyse de calculateurs"),
+          bs4Dash::menuItem(
             "Analyse individuelle",
             tabName = "indiv",
-            icon = icon("user", verify_fa = FALSE)
+            icon = shiny::icon("user", verify_fa = FALSE)
           ),
-          menuItem(
+          bs4Dash::menuItem(
             "Analyse de groupe",
             tabName = "grp",
-            icon = icon("users")
+            icon = shiny::icon("users")
           ),
-          sidebarHeader("Outils complémentaires"),
-          menuItem(
-            "Conversion JSON",
-            tabName = "jsonify",
-            icon = icon("file-code", verify_fa = FALSE)
+          bs4Dash::sidebarHeader("Analyses de la base IDEA_V4"),
+          bs4Dash::menuItem(
+            "Données repère",
+            tabName = "data_repere",
+            icon = shiny::icon("database")
           ),
-          sidebarHeader("A propos"),
-          menuItem(
+          bs4Dash::menuItem(
+            "Statistiques et usages",
+            tabName = "stat_base",
+            icon = shiny::icon("dashboard")
+          ),
+
+          # sidebarHeader("Outils complémentaires"),
+          # menuItem(
+          #   "Conversion JSON",
+          #   tabName = "jsonify",
+          #   icon = icon("file-code", verify_fa = FALSE)
+          # ),
+          bs4Dash::sidebarHeader("A propos"),
+          bs4Dash::menuItem(
             "Mentions légales",
             tabName = "cgu",
-            icon = icon("book")
-          ),
-          menuItem(
-            "Contact",
-            tabName = "contact",
-            icon = icon("mail")
+            icon = shiny::icon("book")
           )
         )
       ),
-      controlbar = dashboardControlbar(),
-      footer = dashboardFooter(
-        left = a(
-          href = "https://sk8.inrae.fr/",
-          target = "_blank", "Propulsé par SK8"
+      
+      controlbar = NULL,
+      footer = bs4Dash::dashboardFooter(
+        left = shiny::a(
+          href = "https://methode-idea.org/",
+          target = "_blank", "methode-idea.org"
         ),
-        right = "\u00A9 David Carayon - 2022"
+        right = shiny::includeHTML(app_sys("app", "docs", "footer.html"))
       ),
-      body = dashboardBody(
-        tabItems(
-          tabItem(
+      body = bs4Dash::dashboardBody(
+        bs4Dash::tabItems(
+          bs4Dash::tabItem(
             tabName = "home",
             mod_welcome_ui("welcome_ui_1")
           ),
-          tabItem(
+          bs4Dash::tabItem(
             tabName = "cgu",
-            includeMarkdown(app_sys("app", "docs", "cgu.md"))
+            shiny::includeMarkdown(app_sys("app", "docs", "cgu.md"))
           ),
-          tabItem(
-            tabName = "contact",
-            includeMarkdown(app_sys("app", "docs", "cgu.md"))
-          )
-          tabItem(
+          bs4Dash::tabItem(
             tabName = "indiv",
             mod_indiv_analysis_ui("indiv_analysis_ui_1")
           ),
-          tabItem(
+          bs4Dash::tabItem(
             tabName = "grp",
             mod_group_analysis_ui("group_analysis_ui_1")
           ),
-          tabItem(
+          bs4Dash::tabItem(
             tabName = "jsonify",
             mod_jsonify_ui("jsonify_ui_1")
+          ),
+          bs4Dash::tabItem(
+            tabName = "stat_base",
+            mod_database_stat_ui("database_stat_1")
+          ),
+          bs4Dash::tabItem(
+            tabName = "data_repere",
+            mod_repere_ui("repere_1")
           )
         )
       )
@@ -104,60 +121,27 @@ app_ui <- function(request) {
 }
 
 #' Add external Resources to the Application
-#'
-#' This function is internally used to add external
-#' resources inside the Shiny application.
+#' 
+#' This function is internally used to add external 
+#' resources inside the Shiny application. 
 #'
 #' @noRd
-#'
-#' @importFrom golem add_resource_path activate_js favicon bundle_resources
-#' @importFrom bs4Dash box
-#' @importFrom shiny tags HTML
+#' @importFrom shiny tags
 golem_add_external_resources <- function(){
-
-
+  
+  
   add_resource_path(
     'www', app_sys('app/www')
   )
-
-  tags$head(
+  
+  shiny::tags$head(
     favicon(),
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'ShinyIDEA'
     ),
-    ### Replacing status colors
-    tags$style(
-      type = 'text/css',
-      '.info-box.bg-success {background-color: #0D8A00!important; color: #FFFFFF }'),
-    tags$style(
-      type = 'text/css',
-      '.info-box.bg-warning {background-color: #FE942E!important; color: #FFFFFF }'),
-    tags$style(
-      type = 'text/css',
-      '.info-box.bg-danger {background-color: #FF0000!important; color: #FFFFFF }'),
-    tags$style(
-      type = 'text/css',
-      '.info-box.bg-info {background-color: #6db866!important; color: #FFFFFF }'),
-    tags$style(
-      type = 'text/css',
-      '.info-box.bg-maroon {background-color: #FF6348!important; color: #000000; }'),
-    tags$style(
-      type = 'text/css',
-      '.info-box-icon.elevation-3 {color: #FFFFFF; }'),
-    tags$style(
-      HTML(".shiny-notification {
-              height: 50px;
-              width: 600px;
-              position:fixed;
-              top: calc(100% - 55px);;
-              left: calc(50% - 300px);;
-            }
-           "
-      )
-    )
     # Add here other external resources
-    # for example, you can add useShinyalert()
+    # for example, you can add useShinyalert() 
   )
 }
 

@@ -3,29 +3,26 @@
 #' @description A shiny Module.
 #'
 #' @noRd
-#'
-#' @importFrom IDEATools diag_idea
-#' @importFrom shiny moduleServer downloadHandler
-#' @importFrom shinyWidgets sendSweetAlert closeSweetAlert
-#' @importFrom zip zip
+#' @importFrom shiny moduleServer downloadHandler showModal modalDialog
+#' @importFrom utils zip
+#' @import IDEATools
 dlmodule_group <- function(id){
-  moduleServer(id, function(input, output, session){
+  shiny::moduleServer(id, function(input, output, session){
     # PDF ---------------------------------------------------------------------
-    output$dl_group_pdf <- downloadHandler(
+    output$dl_group_pdf <- shiny::downloadHandler(
       filename = function() {
         paste0("Rapport_groupe_", length(input$dir$datapath), ".pdf")
       },
       
       content = function(file) {
         
-        sendSweetAlert(
-          session = session,
-          type = "info",
-          title = "Production du fichier en cours. Merci de patienter quelques secondes..."
-        )
+        shiny::showModal(shiny::modalDialog(
+          title = "Production du fichier en cours",
+          "Merci de patienter quelques secondes..."
+        ))
         
         # Defining a knitting dir in tempdir in case the user doesn't have all permissions in working dir
-        knitting_dir <- file.path(tempdir(), "IDEATools_reports")
+        knitting_dir <- file.path(tempdir(), "IDEATools_reports")  
         if (!dir.exists(knitting_dir)) (dir.create(knitting_dir))
         
         diag_idea(dirname(input$dir$datapath[[1]]),
@@ -37,13 +34,6 @@ dlmodule_group <- function(id){
         
         file.copy(file.path(knitting_dir, Sys.Date(), paste0("Groupe_",fname), paste0("Rapport_groupe_", fname, ".pdf")), file)
         
-        closeSweetAlert(session = session)
-        
-        sendSweetAlert(
-          session = session,
-          title = " Fichier téléchargé !",
-          type = "success"
-        )
         
       }
       
@@ -53,17 +43,16 @@ dlmodule_group <- function(id){
     
     
     # Powerpoint --------------------------------------------------------------
-    output$dl_group_pptx <- downloadHandler(
+    output$dl_group_pptx <- shiny::downloadHandler(
       filename = function() {
         paste0("Rapport_groupe_", length(input$dir$datapath), ".pptx")
       },
       
       content = function(file) {
-        sendSweetAlert(
-          session = session,
-          type = "info",
-          title = "Production du fichier en cours. Merci de patienter quelques secondes..."
-        )
+        shiny::showModal(shiny::modalDialog(
+          title = "Production du fichier en cours",
+          "Merci de patienter quelques secondes..."
+        ))
         
         # Defining a knitting dir in tempdir in case the user doesn't have all permissions in working directory
         knitting_dir <- file.path(tempdir(), "IDEATools_reports")
@@ -79,27 +68,21 @@ dlmodule_group <- function(id){
         
         file.copy(file.path(knitting_dir, Sys.Date(), prefix, paste0("Rapport_groupe_", length(input$dir$datapath), ".pptx")), file)
         
-        closeSweetAlert(session = session)
-        sendSweetAlert(
-          session = session,
-          title = " Fichier téléchargé !",
-          type = "success"
-        )
+        
       }
     )
     
     # Word --------------------------------------------------------------
-    output$dl_group_docx <- downloadHandler(
+    output$dl_group_docx <- shiny::downloadHandler(
       filename = function() {
         paste0("Rapport_groupe_", length(input$dir$datapath), ".docx")
       },
       
       content = function(file) {
-        sendSweetAlert(
-          session = session,
-          type = "info",
-          title = "Production du fichier en cours. Merci de patienter quelques secondes..."
-        )
+        shiny::showModal(shiny::modalDialog(
+          title = "Production du fichier en cours",
+          "Merci de patienter quelques secondes..."
+        ))
         
         # Defining a knitting dir in tempdir in case the user doesn't have all permissions in working directory
         knitting_dir <- file.path(tempdir(), "IDEATools_reports")
@@ -115,27 +98,20 @@ dlmodule_group <- function(id){
         
         file.copy(file.path(knitting_dir, Sys.Date(), prefix, paste0("Rapport_groupe_", length(input$dir$datapath), ".docx")), file)
         
-        closeSweetAlert(session = session)
-        sendSweetAlert(
-          session = session,
-          title = " Fichier téléchargé !",
-          type = "success"
-        )
       }
     )
     
     # ZIP --------------------------------------------------------------
-    output$dl_group_zip <- downloadHandler(
+    output$dl_group_zip <- shiny::downloadHandler(
       filename = function() {
         paste0("Figures_Groupe_", length(input$dir$datapath), ".zip")
       },
       
       content = function(file) {
-        sendSweetAlert(
-          session = session,
-          type = "info",
-          title = "Production du fichier en cours. Merci de patienter quelques secondes..."
-        )
+        shiny::showModal(shiny::modalDialog(
+          title = "Production du fichier en cours",
+          "Merci de patienter quelques secondes..."
+        ))
         
         outdir <- file.path(tempdir(), "Figures")
         
@@ -153,30 +129,23 @@ dlmodule_group <- function(id){
         fs <- list.files(prefix, recursive = TRUE, full.names = TRUE)
         
         # Export du zip
-        zip(zipfile = file, files = fs)
+        utils::zip(zipfile = file, files = fs)
         setwd(current_dir)
         
-        closeSweetAlert(session = session)
-        sendSweetAlert(
-          session = session,
-          title = " Fichier téléchargé !",
-          type = "success"
-        )
       }
     )
     
     # EXCEL --------------------------------------------------------------
-    output$dl_group_xlsx <- downloadHandler(
+    output$dl_group_xlsx <- shiny::downloadHandler(
       filename = function() {
         paste0("Rapport_groupe_", length(input$dir$datapath), ".xlsx")
       },
       
       content = function(file) {
-        sendSweetAlert(
-          session = session,
-          type = "info",
-          title = "Production du fichier en cours. Merci de patienter quelques secondes..."
-        )
+        shiny::showModal(shiny::modalDialog(
+          title = "Production du fichier en cours",
+          "Merci de patienter quelques secondes..."
+        ))
         
         # Defining a knitting dir in tempdir in case the user doesn't have all permissions in working directory
         knitting_dir <- file.path(tempdir(), "IDEATools_reports")
@@ -192,12 +161,6 @@ dlmodule_group <- function(id){
         
         file.copy(file.path(knitting_dir, Sys.Date(), prefix, paste0("Rapport_groupe_", length(input$dir$datapath), ".xlsx")), file)
         
-        closeSweetAlert(session = session)
-        sendSweetAlert(
-          session = session,
-          title = " Fichier téléchargé !",
-          type = "success"
-        )
       }
     )
   })
