@@ -1,11 +1,4 @@
-include:
-  - project: "sk8/sk8-conf/sk8-template-ci"
-    ref: main
-    file:
-      - "/templates/.header-template.yml"
-      - "/templates/.docker-template.yml"
-      - "/templates/.cicd-template.yml"
-      - "/templates/.footer-template.yml"
+include: '.gitlab-ci-sk8.yml'
 
 variables:
   DOCKERFILE_NAME: "Dockerfile.simple.rshiny"
