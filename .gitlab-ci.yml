@@ -1,6 +1,1 @@
 include: '.gitlab-ci-sk8.yml'
-
-variables:
-  DOCKERFILE_NAME: "Dockerfile.simple.rshiny"
-  R_DOCKER_TAG: "latest"
-  MISE_A_JOUR_AUTOMATIQUE: "false"
