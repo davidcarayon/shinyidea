@@ -7,6 +7,9 @@
 #' @importFrom bs4Dash dashboardPage dashboardHeader dashboardBrand dashboardSidebar sidebarUserPanel sidebarMenu menuItem sidebarHeader dashboardFooter dashboardBody tabItems tabItem
 #' @importFrom shiny tagList icon a includeHTML includeMarkdown
 #' @importFrom shinyjs useShinyjs
+#' @importFrom bs4Dash dashboardPage dashboardHeader dashboardBrand dashboardSidebar sidebarUserPanel sidebarMenu menuItem sidebarHeader dashboardFooter dashboardBody tabItems tabItem
+#' @importFrom shiny tagList icon a includeHTML includeMarkdown
+#' @importFrom shinyjs useShinyjs
 app_ui <- function(request) {
   shiny::tagList(
     # Leave this function for adding external resources
@@ -127,16 +130,17 @@ app_ui <- function(request) {
 #'
 #' @noRd
 #' @importFrom shiny tags
+#' @importFrom golem add_resource_path favicon bundle_resources
 golem_add_external_resources <- function(){
   
   
-  add_resource_path(
+  golem::add_resource_path(
     'www', app_sys('app/www')
   )
   
   shiny::tags$head(
-    favicon(),
-    bundle_resources(
+    golem::favicon(),
+    golem::bundle_resources(
       path = app_sys('app/www'),
       app_title = 'ShinyIDEA'
     ),
