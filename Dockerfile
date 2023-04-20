@@ -5,10 +5,11 @@ RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.m
 RUN R -e 'install.packages("remotes")'
 RUN Rscript -e 'remotes::install_version("magrittr",upgrade="never", version = "2.0.3")'
 RUN Rscript -e 'remotes::install_version("htmltools",upgrade="never", version = "0.5.5")'
-RUN Rscript -e 'remotes::install_version("IDEATools",upgrade="never", version = "3.4.1")'
 RUN Rscript -e 'remotes::install_version("dplyr",upgrade="never", version = "1.1.1")'
 RUN Rscript -e 'remotes::install_version("ggplot2",upgrade="never", version = "3.4.2")'
 RUN Rscript -e 'remotes::install_version("tidyr",upgrade="never", version = "1.3.0")'
+RUN Rscript -e 'remotes::install_version("stringr",upgrade="never", version = "1.5.0")'
+RUN Rscript -e 'remotes::install_version("jsonlite",upgrade="never", version = "1.8.4")'
 RUN Rscript -e 'remotes::install_version("shiny",upgrade="never", version = "1.7.4")'
 RUN Rscript -e 'remotes::install_version("DBI",upgrade="never", version = "1.1.3")'
 RUN Rscript -e 'remotes::install_version("data.table",upgrade="never", version = "1.14.8")'
@@ -21,6 +22,7 @@ RUN Rscript -e 'remotes::install_version("golem",upgrade="never", version = "0.3
 RUN Rscript -e 'remotes::install_version("DT",upgrade="never", version = "0.26")'
 RUN Rscript -e 'remotes::install_version("bs4Dash",upgrade="never", version = "2.2.1")'
 RUN Rscript -e 'remotes::install_version("tinytex",upgrade="never", version = "0.45")'
+RUN Rscript -e 'remotes::install_github("davidcarayon/IDEATools")'
 RUN Rscript -e 'remotes::install_github("rstudio/sass@2f1f152d84c162ccb9aba1c056e3548079d669d9")'
 RUN mkdir /build_zone
 ADD . /build_zone

@@ -91,7 +91,7 @@ CustomDownloadButton <- function(outputId, label = "Download", style = "unite", 
                        label = shiny::tagList(shiny::tags$a(id = outputId, class = "shiny-download-link", 
                                               href = "", target = "_blank", download = NA), label), 
                        color = color, style = style, size = size, block = block, 
-                       no_outline = no_outline, icon = shiny::icon)
+                       no_outline = no_outline, icon = icon)
   htmltools::tagAppendAttributes(bttn, onclick = sprintf("getElementById('%s').click()", 
                                                          outputId))}  
 

@@ -3,6 +3,7 @@
 #' @description A shiny Module.
 #'
 #' @noRd
+#' @importFrom jsonlite fromJSON write_json
 #' @importFrom shiny moduleServer downloadHandler showModal modalDialog modalButton
 #' @importFrom utils zip
 dlmodule <- function(id){
@@ -15,8 +16,8 @@ dlmodule <- function(id){
       },
       
       content = function(file) {
-        f <- fromJSON(system.file("example_data/idea_example_1.json", package = "IDEATools"))
-        write_json(f, file)
+        f <- jsonlite::fromJSON(system.file("example_data/idea_example_1.json", package = "IDEATools"))
+        jsonlite::write_json(f, file)
       }
     )
     

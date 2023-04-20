@@ -39,11 +39,11 @@ mod_indiv_analysis_ui <- function(id){
 #' @noRd 
 #' @import data.table
 #' @importFrom bs4Dash renderInfoBox infoBox renderbs4InfoBox bs4InfoBox bs4Card bs4InfoBoxOutput
-#' @importFrom data.table as.data.table
 #' @importFrom DBI dbConnect dbWriteTable dbDisconnect
 #' @importFrom grDevices pdf
 #' @importFrom RSQLite SQLite
 #' @importFrom shiny moduleServer eventReactive observeEvent renderPlot icon renderText HTML req renderUI div fluidRow htmlOutput plotOutput
+#' @importFrom stringr str_to_title
 mod_indiv_analysis_server <- function(id){
   shiny::moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -117,7 +117,7 @@ mod_indiv_analysis_server <- function(id){
         
         color <- replace_col(val)
         
-        val <- str_to_title(val)
+        val <- stringr::str_to_title(val)
         
         ico <- ifelse(val %in% c("Favorable", "Très Favorable"), yes = "smile", no = "frown")
         
@@ -135,7 +135,7 @@ mod_indiv_analysis_server <- function(id){
         
         color <- replace_col(val)
         
-        val <- str_to_title(val)
+        val <- stringr::str_to_title(val)
         
         ico <- ifelse(val %in% c("Favorable", "Très Favorable"), yes = "smile", no = "frown")
         
@@ -153,7 +153,7 @@ mod_indiv_analysis_server <- function(id){
         
         color <- replace_col(val)
         
-        val <- str_to_title(val)
+        val <- stringr::str_to_title(val)
         
         ico <- ifelse(val %in% c("Favorable", "Très Favorable"), yes = "smile", no = "frown")
         
@@ -171,7 +171,7 @@ mod_indiv_analysis_server <- function(id){
         
         color <- replace_col(val)
         
-        val <- str_to_title(val)
+        val <- stringr::str_to_title(val)
         
         ico <- ifelse(val %in% c("Favorable", "Très Favorable"), yes = "smile", no = "frown")
         
@@ -189,7 +189,7 @@ mod_indiv_analysis_server <- function(id){
         
         color <- replace_col(val)
         
-        val <- str_to_title(val)
+        val <- stringr::str_to_title(val)
         
         ico <- ifelse(val %in% c("Favorable", "Très Favorable"), yes = "smile", no = "frown")
         
