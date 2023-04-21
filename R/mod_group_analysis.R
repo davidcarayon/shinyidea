@@ -36,14 +36,15 @@ mod_group_analysis_ui <- function(id){
 #' @noRd 
 #' @import data.table
 #' @importFrom bs4Dash bs4Card
+#' @importFrom data.table as.data.table
 #' @importFrom dplyr inner_join mutate filter select
 #' @importFrom DT renderDataTable datatable formatStyle styleEqual dataTableOutput
-#' @importFrom ggplot2 guides element_text
+#' @importFrom ggplot2 ggplot aes stat_boxplot geom_boxplot geom_point scale_fill_manual theme element_blank guides labs scale_y_continuous element_text
 #' @importFrom grDevices pdf
 #' @importFrom plotly renderPlotly ggplotly plotlyOutput
 #' @importFrom shiny moduleServer eventReactive observeEvent p renderUI fluidRow div icon
-#' @importFrom tidyr gather spread
 #' @importFrom shinycssloaders withSpinner
+#' @importFrom tidyr gather spread
 mod_group_analysis_server <- function(id){
   shiny::moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -77,17 +78,17 @@ mod_group_analysis_server <- function(id){
 
         moys <- df_dim[,.(Moyenne = mean(dimension_value)),by = dimension]
 
-        p <- ggplot(df_dim, aes(x = dimension, y = dimension_value)) +
-          stat_boxplot(geom = "errorbar", width = 0.3) +
-          geom_boxplot(color = "black", aes(fill = dimension), width = 0.8) +
-          geom_point(data = moys, aes(x = dimension, y = Moyenne), size = 4, color = "darkred",shape = 18) +
+        p <- ggplot2::ggplot(df_dim, ggplot2::aes(x = dimension, y = dimension_value)) +
+          ggplot2::stat_boxplot(geom = "errorbar", width = 0.3) +
+          ggplot2::geom_boxplot(color = "black", ggplot2::aes(fill = dimension), width = 0.8) +
+          ggplot2::geom_point(data = moys, ggplot2::aes(x = dimension, y = Moyenne), size = 4, color = "darkred",shape = 18) +
           IDEATools:::theme_idea() +
-          scale_fill_manual(values = c("Agroécologique" = "#2e9c15", "Socio-Territoriale" = "#5077FE", "Economique" = "#FE962B")) +
-          theme(axis.title.x = element_blank()) +
+          ggplot2::scale_fill_manual(values = c("Agroécologique" = "#2e9c15", "Socio-Territoriale" = "#5077FE", "Economique" = "#FE962B")) +
+          ggplot2::theme(axis.title.x = ggplot2::element_blank()) +
           ggplot2::guides(fill = "none") +
-          labs(y = "Valeur de la dimension",fill = "Dimension") +
-          scale_y_continuous(breaks = seq(0,100,10), limits = c(0,100)) +
-          theme(axis.text.x = ggplot2::element_text(angle = 45))
+          ggplot2::labs(y = "Valeur de la dimension",fill = "Dimension") +
+          ggplot2::scale_y_continuous(breaks = seq(0,100,10), limits = c(0,100)) +
+          ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45))
 
         plotly::ggplotly(shiny::p)
 
