@@ -43,6 +43,7 @@ mod_group_analysis_ui <- function(id){
 #' @importFrom plotly renderPlotly ggplotly plotlyOutput
 #' @importFrom shiny moduleServer eventReactive observeEvent p renderUI fluidRow div icon
 #' @importFrom tidyr gather spread
+#' @importFrom shinycssloaders withSpinner
 mod_group_analysis_server <- function(id){
   shiny::moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -126,7 +127,7 @@ mod_group_analysis_server <- function(id){
                   collapsed = FALSE,
                   closable = FALSE,
                   solidHeader = TRUE,
-                  plotly::plotlyOutput(ns("group_boxplot")) %>% withSpinner(color="#0dc5c1")),
+                  plotly::plotlyOutput(ns("group_boxplot")) %>% shinycssloaders::withSpinner(color="#0dc5c1")),
 
           bs4Dash::bs4Card(inputId = ns("DTCard"),
                   title = "Résultats par les propriétés",
@@ -135,7 +136,7 @@ mod_group_analysis_server <- function(id){
                   collapsed = FALSE,
                   closable = FALSE,
                   solidHeader = TRUE,
-                  DT::dataTableOutput(ns("table_prop")) %>% withSpinner(color="#0dc5c1")
+                  DT::dataTableOutput(ns("table_prop")) %>% shinycssloaders::withSpinner(color="#0dc5c1")
           )
 
 
