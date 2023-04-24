@@ -90,7 +90,7 @@ mod_group_analysis_server <- function(id){
           ggplot2::scale_y_continuous(breaks = seq(0,100,10), limits = c(0,100)) +
           ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45))
 
-        plotly::ggplotly(shiny::p)
+        plotly::ggplotly(p)
 
       })
       output$table_prop <- DT::renderDataTable({
